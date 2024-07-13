@@ -3,16 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Tree</title>
+    <title>Binary Tree Builder</title>
     <link rel="stylesheet" href="t.css">
 </head>
 <body>
-    <div>
-        <input type="text" id="nodeInput" placeholder="Enter node text">
-        <button onclick="addRootNode()">Add Root Node</button>
+    <div class="container">
+        <h1>Binary Tree Builder</h1>
+        <div class="input-section">
+            <input type="number" id="rootInput" placeholder="Enter root node value">
+            <input type="number" id="leftChildInput" placeholder="Enter left child value">
+            <input type="number" id="rightChildInput" placeholder="Enter right child value">
+            <button id="addNodeBtn">Add Node</button>
+            <button id="buildTreeBtn">Build Tree</button>
+        </div>
+        <div id="tree-container">
+            <svg id="tree-svg"></svg>
+        </div>
     </div>
-    <div id="root"></div>
-
-    <script src=t.js"></script>
+    <script src="t.js"></script>
 </body>
 </html>
