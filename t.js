@@ -1,3 +1,7 @@
+
+
+
+
 class TreeNode {
     constructor(value) {
         this.value = value;
@@ -9,6 +13,10 @@ class TreeNode {
 class BinaryTree {
     constructor() {
         this.root = null;
+    }
+    getHeight(node = this.root) {
+        if (node === null) return 0;
+        return 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
     }
 
     insert(value, parentValue, isLeft) {
@@ -48,8 +56,8 @@ const buildTreeBtn = document.getElementById('buildTreeBtn');
 const resetBtn = document.getElementById('resetBtn');
 const messageBox = document.getElementById('messageBox');
 const rootDisplay = document.getElementById('rootDisplay');
-const leftChildDisplay = document.getElementById('leftChildInput');
-const rightChildDisplay = document.getElementById('rightChildInput');
+const leftChildDisplay = document.getElementById('leftChildDisplay');
+const rightChildDisplay = document.getElementById('rightChildDisplay');
 const treeHeight = document.getElementById('treeHeight');
 
 function getRandomColor() {
@@ -127,9 +135,12 @@ function displayMessage(message) {
 }
 
 function displayNodeInfo(node) {
-    rootDisplay.textContent = node.value;
-    leftChildDisplay.textContent = node.left ? node.left.value : 'None';
-    rightChildDisplay.textContent = node.right ? node.right.value : 'None';
+    requestAnimationFrame(() => {
+        rootDisplay.textContent = node.value;
+        leftChildDisplay.textContent = node.left ? node.left.value : 'None';
+        rightChildDisplay.textContent = node.right ? node.right.value : 'None';
+        treeHeight.textContent = tree.getHeight();
+    });
 }
 
 function resetDisplay() {
@@ -139,7 +150,10 @@ function resetDisplay() {
     rightChildDisplay.textContent = 'None';
     treeHeight.textContent = '0';
     displayMessage('Tree has been reset');
+  
+    displayNodeInfo({ value: 'None', left: null, right: null });
 }
+
 
 addNodeBtn.addEventListener('click', () => {
     const rootValue = parseInt(document.getElementById('rootInput').value);
@@ -157,6 +171,7 @@ addNodeBtn.addEventListener('click', () => {
         if (!isNaN(rightValue)) {
             message += tree.insert(rightValue, rootValue, false) + "\n";
         }
+        displayNodeInfo(tree.root); // Update display after adding nodes
     } else {
         message = "Please enter a valid root value";
     }
@@ -169,6 +184,7 @@ addNodeBtn.addEventListener('click', () => {
 
 buildTreeBtn.addEventListener('click', () => {
     drawTree();
+    displayNodeInfo(tree.root); // Update display after building tree
     displayMessage("Tree built and displayed");
 });
 
