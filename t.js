@@ -35,16 +35,22 @@ class BinaryTree {
         }
         return "Parent node not found";
     }
+
+    reset() {
+        this.root = null;
+    }
 }
 
 const tree = new BinaryTree();
 const svg = document.getElementById('tree-svg');
 const addNodeBtn = document.getElementById('addNodeBtn');
 const buildTreeBtn = document.getElementById('buildTreeBtn');
+const resetBtn = document.getElementById('resetBtn');
 const messageBox = document.getElementById('messageBox');
 const rootDisplay = document.getElementById('rootDisplay');
-const leftChildDisplay = document.getElementById('leftChildDisplay');
-const rightChildDisplay = document.getElementById('rightChildDisplay');
+const leftChildDisplay = document.getElementById('leftChildInput');
+const rightChildDisplay = document.getElementById('rightChildInput');
+const treeHeight = document.getElementById('treeHeight');
 
 function getRandomColor() {
     const letters = '0123456789ABCDEF';
@@ -82,7 +88,6 @@ function drawTree() {
         text.textContent = node.value;
         svg.appendChild(text);
 
-        // Add click event listener to the node
         circle.addEventListener('click', () => {
             displayNodeInfo(node);
         });
@@ -127,3 +132,50 @@ function displayNodeInfo(node) {
     rightChildDisplay.textContent = node.right ? node.right.value : 'None';
 }
 
+function resetDisplay() {
+    svg.innerHTML = '';
+    rootDisplay.textContent = 'None';
+    leftChildDisplay.textContent = 'None';
+    rightChildDisplay.textContent = 'None';
+    treeHeight.textContent = '0';
+    displayMessage('Tree has been reset');
+}
+
+addNodeBtn.addEventListener('click', () => {
+    const rootValue = parseInt(document.getElementById('rootInput').value);
+    const leftValue = parseInt(document.getElementById('leftChildInput').value);
+    const rightValue = parseInt(document.getElementById('rightChildInput').value);
+    let message = "";
+
+    if (!isNaN(rootValue)) {
+        if (!tree.root) {
+            message += tree.insert(rootValue) + "\n";
+        }
+        if (!isNaN(leftValue)) {
+            message += tree.insert(leftValue, rootValue, true) + "\n";
+        }
+        if (!isNaN(rightValue)) {
+            message += tree.insert(rightValue, rootValue, false) + "\n";
+        }
+    } else {
+        message = "Please enter a valid root value";
+    }
+
+    displayMessage(message.trim());
+    document.getElementById('rootInput').value = '';
+    document.getElementById('leftChildInput').value = '';
+    document.getElementById('rightChildInput').value = '';
+});
+
+buildTreeBtn.addEventListener('click', () => {
+    drawTree();
+    displayMessage("Tree built and displayed");
+});
+
+resetBtn.addEventListener('click', () => {
+    tree.reset();
+    resetDisplay();
+});
+
+// Initialize the display
+displayNodeInfo({ value: 'None', left: null, right: null });
