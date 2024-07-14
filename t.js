@@ -13,26 +13,27 @@ class BinaryTree {
 
     insert(value, parentValue, isLeft) {
         const newNode = new TreeNode(value);
-
         if (!this.root) {
             this.root = newNode;
-            return;
+            return "Root node added";
         }
-
         const queue = [this.root];
         while (queue.length > 0) {
             const current = queue.shift();
             if (current.value === parentValue) {
                 if (isLeft && !current.left) {
                     current.left = newNode;
+                    return `Left child ${value} added to parent ${parentValue}`;
                 } else if (!isLeft && !current.right) {
                     current.right = newNode;
+                    return `Right child ${value} added to parent ${parentValue}`;
                 }
-                return;
+                return "Node already exists";
             }
             if (current.left) queue.push(current.left);
             if (current.right) queue.push(current.right);
         }
+        return "Parent node not found";
     }
 }
 
@@ -40,6 +41,10 @@ const tree = new BinaryTree();
 const svg = document.getElementById('tree-svg');
 const addNodeBtn = document.getElementById('addNodeBtn');
 const buildTreeBtn = document.getElementById('buildTreeBtn');
+const messageBox = document.getElementById('messageBox');
+const rootDisplay = document.getElementById('rootDisplay');
+const leftChildDisplay = document.getElementById('leftChildDisplay');
+const rightChildDisplay = document.getElementById('rightChildDisplay');
 
 function getRandomColor() {
     const letters = '0123456789ABCDEF';
@@ -55,8 +60,11 @@ function drawTree() {
     if (!tree.root) return;
 
     const nodeRadius = 20;
-    const levelHeight = 80;
-    const drawNode = (node, x, y, level) => {
+    const levelHeight = 60;
+    const svgWidth = 600;
+    const svgHeight = 400;
+
+    function drawNode(node, x, y, level) {
         if (!node) return;
 
         const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
@@ -64,66 +72,58 @@ function drawTree() {
         circle.setAttribute("cy", y);
         circle.setAttribute("r", nodeRadius);
         circle.setAttribute("fill", getRandomColor());
-        circle.setAttribute("class", "node-circle");
         svg.appendChild(circle);
 
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
         text.setAttribute("x", x);
-        text.setAttribute("y", y);
-        text.setAttribute("class", "node-text");
+        text.setAttribute("y", y + 5);
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("fill", "white");
         text.textContent = node.value;
         svg.appendChild(text);
 
+        // Add click event listener to the node
+        circle.addEventListener('click', () => {
+            displayNodeInfo(node);
+        });
+
         if (node.left) {
-            const leftX = x - 100 / (level + 1);
+            const leftX = x - svgWidth / Math.pow(2, level + 2);
             const leftY = y + levelHeight;
-            drawNode(node.left, leftX, leftY, level + 1);
             const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
             line.setAttribute("x1", x);
             line.setAttribute("y1", y + nodeRadius);
             line.setAttribute("x2", leftX);
             line.setAttribute("y2", leftY - nodeRadius);
             line.setAttribute("stroke", "black");
-            svg.insertBefore(line, svg.firstChild);
+            svg.appendChild(line);
+            drawNode(node.left, leftX, leftY, level + 1);
         }
 
         if (node.right) {
-            const rightX = x + 100 / (level + 1);
+            const rightX = x + svgWidth / Math.pow(2, level + 2);
             const rightY = y + levelHeight;
-            drawNode(node.right, rightX, rightY, level + 1);
             const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
             line.setAttribute("x1", x);
             line.setAttribute("y1", y + nodeRadius);
             line.setAttribute("x2", rightX);
             line.setAttribute("y2", rightY - nodeRadius);
             line.setAttribute("stroke", "black");
-            svg.insertBefore(line, svg.firstChild);
-        }
-    };
-
-    drawNode(tree.root, 400, 40, 0);
-}
-
-addNodeBtn.addEventListener('click', () => {
-    const rootValue = parseInt(document.getElementById('rootInput').value);
-    const leftValue = parseInt(document.getElementById('leftChildInput').value);
-    const rightValue = parseInt(document.getElementById('rightChildInput').value);
-
-    if (!isNaN(rootValue)) {
-        if (!tree.root) {
-            tree.insert(rootValue);
-        }
-        if (!isNaN(leftValue)) {
-            tree.insert(leftValue, rootValue, true);
-        }
-        if (!isNaN(rightValue)) {
-            tree.insert(rightValue, rootValue, false);
+            svg.appendChild(line);
+            drawNode(node.right, rightX, rightY, level + 1);
         }
     }
 
-    document.getElementById('rootInput').value = '';
-    document.getElementById('leftChildInput').value = '';
-    document.getElementById('rightChildInput').value = '';
-});
+    drawNode(tree.root, svgWidth / 2, nodeRadius + 10, 0);
+}
 
-buildTreeBtn.addEventListener('click', drawTree);
+function displayMessage(message) {
+    messageBox.textContent = message;
+}
+
+function displayNodeInfo(node) {
+    rootDisplay.textContent = node.value;
+    leftChildDisplay.textContent = node.left ? node.left.value : 'None';
+    rightChildDisplay.textContent = node.right ? node.right.value : 'None';
+}
+
