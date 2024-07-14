@@ -7,17 +7,46 @@
     <link rel="stylesheet" href="t.css">
 </head>
 <body>
+    <header>
+        <h1 class="heading">Binary Tree Builder</h1>
+    </header>
     <div class="container">
-        <h1>Binary Tree Builder</h1>
-        <div class="input-section">
-            <input type="number" id="rootInput" placeholder="Enter root node value">
-            <input type="number" id="leftChildInput" placeholder="Enter left child value">
-            <input type="number" id="rightChildInput" placeholder="Enter right child value">
-            <button id="addNodeBtn">Add Node</button>
-            <button id="buildTreeBtn">Build Tree</button>
+        <div class="container-header">
+            <input type="number" id="rootInput" class="text" placeholder="Enter root node value" required>
+            <input type="number" id="leftChildInput" class="text" placeholder="Enter left child value" required>
+            <input type="number" id="rightChildInput" class="text" placeholder="Enter right child value" required>
         </div>
-        <div id="tree-container">
-            <svg id="tree-svg"></svg>
+        <div class="container-header">
+            <button id="addNodeBtn" class="push">Add Node</button>
+            <button id="buildTreeBtn" class="pop">Build Tree</button>
+            <button id="resetBtn" class="reset">Reset</button>
+        </div>
+        <div class="container-body">
+            <div id="tree-container">
+                <svg id="tree-svg"></svg>
+            </div>
+            <div class="info">
+                <div class="sec1">
+                    <h3>Root Node:</h3>
+                    <button class="box" id="rootDisplay"></button>
+                </div>
+                <div class="sec2">
+                    <h3>Left Child:</h3>
+                    <button class="box" id="leftChildDisplay"></button>
+                </div>
+                <div class="sec3">
+                    <h3>Right Child:</h3>
+                    <button class="box" id="rightChildDisplay"></button>
+                </div>
+                <div class="sec4">
+                    <h3>Tree Height:</h3>
+                    <button class="box" id="treeHeight">0</button>
+                </div>
+                <div class="massage-box">
+                    <h2>Message Box</h2>
+                    <div class="massage" id="messageBox"></div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="t.js"></script>
