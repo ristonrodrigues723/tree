@@ -50,6 +50,80 @@ function getRandomColor() {
     return color;
 }
 
+function drawTree() {
+    svg.innerHTML = '';
+    if (!tree.root) return;
 
+    const nodeRadius = 20;
+    const levelHeight = 80;
+    const drawNode = (node, x, y, level) => {
+        if (!node) return;
+
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", x);
+        circle.setAttribute("cy", y);
+        circle.setAttribute("r", nodeRadius);
+        circle.setAttribute("fill", getRandomColor());
+        circle.setAttribute("class", "node-circle");
+        svg.appendChild(circle);
+
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", x);
+        text.setAttribute("y", y);
+        text.setAttribute("class", "node-text");
+        text.textContent = node.value;
+        svg.appendChild(text);
+
+        if (node.left) {
+            const leftX = x - 100 / (level + 1);
+            const leftY = y + levelHeight;
+            drawNode(node.left, leftX, leftY, level + 1);
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", x);
+            line.setAttribute("y1", y + nodeRadius);
+            line.setAttribute("x2", leftX);
+            line.setAttribute("y2", leftY - nodeRadius);
+            line.setAttribute("stroke", "black");
+            svg.insertBefore(line, svg.firstChild);
+        }
+
+        if (node.right) {
+            const rightX = x + 100 / (level + 1);
+            const rightY = y + levelHeight;
+            drawNode(node.right, rightX, rightY, level + 1);
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("x1", x);
+            line.setAttribute("y1", y + nodeRadius);
+            line.setAttribute("x2", rightX);
+            line.setAttribute("y2", rightY - nodeRadius);
+            line.setAttribute("stroke", "black");
+            svg.insertBefore(line, svg.firstChild);
+        }
+    };
+
+    drawNode(tree.root, 400, 40, 0);
+}
+
+addNodeBtn.addEventListener('click', () => {
+    const rootValue = parseInt(document.getElementById('rootInput').value);
+    const leftValue = parseInt(document.getElementById('leftChildInput').value);
+    const rightValue = parseInt(document.getElementById('rightChildInput').value);
+
+    if (!isNaN(rootValue)) {
+        if (!tree.root) {
+            tree.insert(rootValue);
+        }
+        if (!isNaN(leftValue)) {
+            tree.insert(leftValue, rootValue, true);
+        }
+        if (!isNaN(rightValue)) {
+            tree.insert(rightValue, rootValue, false);
+        }
+    }
+
+    document.getElementById('rootInput').value = '';
+    document.getElementById('leftChildInput').value = '';
+    document.getElementById('rightChildInput').value = '';
+});
 
 buildTreeBtn.addEventListener('click', drawTree);
